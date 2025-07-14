@@ -82,6 +82,7 @@ namespace PM.server.Controllers
 
             var url = $"{Request.Scheme}://{Request.Host}/images/{fileName}";
             return Ok(new { imageUrl = url });
+
         }
     }
 }
