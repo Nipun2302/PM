@@ -1,0 +1,108 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">🛒 Product Management</h2>
+
+  <!-- 🔍 Search & Add -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text"
+             class="form-control"
+             placeholder="Search by name or category"
+             [(ngModel)]="searchText">
+    </div>
+
+    <div class="col-md-6 text-end">
+      <!-- 👇 Add button — only Admin -->
+      <button *ngIf="isAdmin()"
+              class="btn btn-success"
+              (click)="openModal()">
+        + Add Product
+      </button>
+    </div>
+  </div>
+
+  <!-- 🧾 Table -->
+  <table class="table table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price (₹)</th>
+        <th>Stock</th>
+        <th>Image</th>
+        <th *ngIf="isAdmin()">Actions</th> <!-- 👈 header only for Admin -->
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of filteredProducts()">
+        <td>{{ p.id }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ p.category }}</td>
+        <td>{{ p.price }}</td>
+        <td>{{ p.stockQuantity }}</td>
+
+        <!-- thumbnail -->
+        <td><img *ngIf="p.imageUrl" [src]="p.imageUrl" style="height:40px"></td>
+
+        <!-- action buttons only for Admin -->
+        <td *ngIf="isAdmin()">
+          <button class="btn btn-sm btn-warning me-1" (click)="editProduct(p)">✏️</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteProduct(p.id)">🗑️</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ✨ Modal (Add / Edit) — only opens if isAdmin() -->
+  <div class="modal fade" id="productModal" tabindex="-1"
+       aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form (ngSubmit)="saveProduct()">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">
+              {{ isEditing ? 'Edit' : 'Add' }} Product
+            </h5>
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                    (click)="resetForm()"></button>
+          </div>
+
+          <div class="modal-body">
+            <input class="form-control mb-2" [(ngModel)]="newProduct.name"
+                   name="name" placeholder="Name" required>
+            <input class="form-control mb-2" [(ngModel)]="newProduct.category"
+                   name="category" placeholder="Category" required>
+            <input type="number" class="form-control mb-2"
+                   [(ngModel)]="newProduct.price"
+                   name="price" placeholder="Price" required>
+            <input type="number" class="form-control mb-2"
+                   [(ngModel)]="newProduct.stockQuantity"
+                   name="stock" placeholder="Stock" required>
+
+            <!-- image picker & preview -->
+            <input type="file" class="form-control mb-2"
+                   (change)="onFileSelected($event)">
+            <img *ngIf="preview"
+                 [src]="preview"
+                 class="img-thumbnail mb-2"
+                 style="max-height:120px;">
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">
+              {{ isEditing ? 'Update' : 'Save' }}
+            </button>
+            <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    (click)="resetForm()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

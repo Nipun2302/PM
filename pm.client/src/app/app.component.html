@@ -1,0 +1,15 @@
+<span *ngIf="auth.isLoggedIn()" class="ms-3 badge bg-info text-dark">
+  {{ auth.getRole() }}
+</span>
+<nav class="navbar navbar-light bg-light mb-4 px-3">
+  <span class="navbar-brand h5">{{ title }}</span>
+
+  <button *ngIf="isLoggedIn()"
+          class="btn btn-outline-danger btn-sm"
+          (click)="logout()">
+    Logout
+  </button>
+</nav>
+
+
+<router-outlet></router-outlet>
